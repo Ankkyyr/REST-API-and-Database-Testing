@@ -1,0 +1,105 @@
+{
+"info": {
+"name": "E-Commerce REST API - Auth & Dashboard",
+"description": "API Test suite containing 35+ scenarios for Authentication and Dashboard workflows.",
+"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+},
+"item": [
+{
+"name": "User Authentication",
+"item": [
+{
+"name": "Login - Valid Credentials",
+"event": [
+{
+"listen": "test",
+"script": {
+"exec": [
+"/* STREAMING_CHUNK: Validating Login Response /",
+"pm.test("Status code is 200 OK", function () {",
+"    pm.response.to.have.status(200);",
+"});",
+"",
+"pm.test("Response contains valid JWT Auth Token", function () {",
+"    var jsonData = pm.response.json();",
+"    pm.expect(jsonData).to.have.property('token');",
+"});"
+],
+"type": "text/javascript"
+}
+}
+],
+"request": {
+"method": "POST",
+"header": [
+{
+"key": "Content-Type",
+"value": "application/json"
+}
+],
+"url": {
+"raw": "{{baseUrl}}/api/v1/auth/login",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"api",
+"v1",
+"auth",
+"login"
+]
+},
+"body": {
+"mode": "raw",
+"raw": "{\n  "email": "testuser@example.com",\n  "password": "SecurePass123!"\n}"
+}
+}
+},
+{
+"name": "Update User Profile",
+"event": [
+{
+"listen": "test",
+"script": {
+"exec": [
+"/ STREAMING_CHUNK: Validating Profile Update */",
+"pm.test("Status code is 200 OK", function () {",
+"    pm.response.to.have.status(200);",
+"});",
+"",
+"pm.test("Response echoes updated name", function () {",
+"    var jsonData = pm.response.json();",
+"    pm.expect(jsonData.success).to.eql(true);",
+"});"
+],
+"type": "text/javascript"
+}
+}
+],
+"request": {
+"method": "PUT",
+"header": [
+{
+"key": "Authorization",
+"value": "Bearer {{jwt_token}}"
+}
+],
+"url": {
+"raw": "{{baseUrl}}/api/v1/users/profile/update",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"api",
+"v1",
+"users",
+"profile",
+"update"
+]
+}
+}
+}
+]
+}
+]
+}

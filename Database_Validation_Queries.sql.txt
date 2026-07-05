@@ -1,0 +1,33 @@
+-- ==============================================================================
+-- PROJECT: E-Commerce / User Dashboard API & DB Validation
+-- PURPOSE: SQL queries used to verify backend database integrity after API calls.
+-- ==============================================================================
+
+-- STREAMING_CHUNK: Querying user profiles to verify updates
+-- ------------------------------------------------------------------------------
+-- SCENARIO: Verify User Profile Update (The Bug Catch)
+-- API Action: PUT /api/v1/users/profile/update
+-- Description: Validates that the API's 200 OK response actually committed 
+-- the new display name to the backend. (Catches silent transaction failures).
+-- ------------------------------------------------------------------------------
+
+SELECT u.user_id, u.email, p.display_name, p.updated_at 
+FROM users u
+INNER JOIN user_profiles p ON u.user_id = p.user_id
+WHERE u.email = 'testuser@example.com';
+
+
+-- STREAMING_CHUNK: Querying order and payment status
+-- ------------------------------------------------------------------------------
+-- SCENARIO: Verify Order Status after Checkout API call
+-- API Action: POST /api/v1/checkout
+-- Description: Ensures that the payment gateway callback correctly updates 
+-- the order status to 'PAID' in the primary database.
+-- ------------------------------------------------------------------------------
+
+SELECT o.order_id, o.order_status, p.payment_status, p.transaction_id
+FROM orders o
+JOIN payments p ON o.order_id = p.order_id
+WHERE o.user_id = 1045
+ORDER BY o.created_at DESC
+LIMIT 1;
